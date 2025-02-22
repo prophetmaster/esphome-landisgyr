@@ -2,6 +2,16 @@
 
 This ESPHome component enables communication with Landis+Gyr smart meters via their optical interface. It supports reading various meter values including energy consumption, voltage, current, and power factor measurements.
 
+## Installation
+
+Add this external component to your ESPHome configuration by adding these lines to your YAML file:
+
+```yaml
+external_components:
+  - source: github://prophetmaster/esphome-landisgyr
+    components: [ landisgyr ]
+```
+
 ## Features
 
 - Serial communication at 300 baud with 7E1 configuration
@@ -39,29 +49,32 @@ This ESPHome component enables communication with Landis+Gyr smart meters via th
 Example configuration in your ESPHome YAML file:
 
 ```yaml
+# Enable UART
 uart:
   id: uart_bus
-  tx_pin: GPIO1
-  rx_pin: GPIO3
+  tx_pin: GPIO17  # Adjust according to your setup
+  rx_pin: GPIO16  # Adjust according to your setup
   baud_rate: 300
   data_bits: 7
   parity: EVEN
   stop_bits: 1
 
-landisgyr:
-  uart_id: uart_bus
-  # Define sensors you want to monitor
-  error_code:
-    name: "Meter Error Code"
-  customer_id:
-    name: "Customer ID"
-  positive_active_energy_total:
-    name: "Total Active Energy"
-    unit_of_measurement: "kWh"
-  voltage_p1:
-    name: "Phase 1 Voltage"
-    unit_of_measurement: "V"
+# Configure sensors
+sensor:
+  - platform: landisgyr
+    error_code:
+      name: "Meter Error Code"
+    customer_id:
+      name: "Customer ID"
+    positive_active_energy_total:
+      name: "Total Active Energy"
+      unit_of_measurement: "kWh"
+    voltage_p1:
+      name: "Phase 1 Voltage"
+      unit_of_measurement: "V"
 ```
+
+See [example_landisgyr.yaml](example_landisgyr.yaml) for a full configuration example with all available sensors.
 
 ## Protocol Details
 
@@ -80,10 +93,14 @@ The component implements the IEC 62056-21 protocol for communication with the me
 
 ## Debugging
 
-The component includes detailed logging for troubleshooting:
-- Message reception and parsing
-- Checksum validation
-- Sensor value updates
+The component includes detailed logging for troubleshooting. To enable debug logging, add to your configuration:
+
+```yaml
+logger:
+  level: DEBUG
+  logs:
+    landisgyr: DEBUG
+```
 
 ## License
 
