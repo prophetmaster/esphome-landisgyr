@@ -1,0 +1,15 @@
+# ESPHome build files
+.esphome/
+.pio/
+__pycache__/
+*.pyc
+
+# IDE files
+.vscode/
+.idea/
+
+# Secrets
+secrets.yaml
+
+# Logs
+*.log
