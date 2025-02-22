@@ -1,71 +1,31 @@
 # Landis+Gyr ESPHome Component
 
-This ESPHome component enables communication with Landis+Gyr smart meters via their optical interface. It supports reading various meter values including energy consumption, voltage, current, and power factor measurements.
+ESPHome component for reading Landis+Gyr smart meters via their optical interface. Compatible with ESPHome and Home Assistant.
 
-## Installation
+## Quick Start
 
-Add this external component to your ESPHome configuration by adding these lines to your YAML file:
-
+1. Add the external component to your ESPHome configuration:
 ```yaml
 external_components:
   - source: github://prophetmaster/esphome-landisgyr
     components: [ landisgyr ]
 ```
 
-## Features
-
-- Serial communication at 300 baud with 7E1 configuration
-- Automatic message framing and checksum validation
-- Support for multiple meter values and measurements
-- Real-time data reading and publishing to Home Assistant
-
-## Supported Measurements
-
-### Special Values
-- Error code (F.F)
-- Customer identification (0.0)
-- Firmware Version (0.2.0)
-- Meter ID (C.1.0)
-- Manufacturing ID (C.1.1)
-- Status Flag (C.5.0)
-- Event power down counter (C.7.0)
-
-### Security
-- Terminal cover removal counter (82.8.1)
-- DC Field Count (82.8.2)
-
-### Energy Measurements
-- Positive active energy (A+) total and tariffs T1/T2 (1.8.0/1/2)
-- Negative active energy (A-) total and tariffs T1/T2 (2.8.0/1/2)
-- Imported/Exported reactive energy for all quadrants (5.8.0/1/2 through 8.8.0/1/2)
-
-### Instantaneous Values
-- Voltage per phase (32.7, 52.7, 72.7)
-- Current per phase (31.7, 51.7, 71.7)
-- Power factor total and per phase (13.7, 33.7, 53.7, 73.7)
-
-## Configuration
-
-Example configuration in your ESPHome YAML file:
-
+2. Configure UART for your optical probe:
 ```yaml
-# Enable UART
 uart:
-  id: uart_bus
   tx_pin: GPIO17  # Adjust according to your setup
   rx_pin: GPIO16  # Adjust according to your setup
   baud_rate: 300
   data_bits: 7
   parity: EVEN
   stop_bits: 1
+```
 
-# Configure sensors
+3. Add sensors you want to monitor:
+```yaml
 sensor:
   - platform: landisgyr
-    error_code:
-      name: "Meter Error Code"
-    customer_id:
-      name: "Customer ID"
     positive_active_energy_total:
       name: "Total Active Energy"
       unit_of_measurement: "kWh"
@@ -74,27 +34,49 @@ sensor:
       unit_of_measurement: "V"
 ```
 
-See [example_landisgyr.yaml](example_landisgyr.yaml) for a full configuration example with all available sensors.
-
-## Protocol Details
-
-The component implements the IEC 62056-21 protocol for communication with the meter:
-
-1. Initialization sequence with `/?!` command
-2. Baud rate acknowledgment with `<ACK>000`
-3. Message framing with STX/ETX
-4. XOR checksum validation
+See [example_landisgyr.yaml](example_landisgyr.yaml) for a complete configuration with all available sensors.
 
 ## Hardware Setup
 
-1. Connect an optical probe to your ESP32's UART pins
-2. Ensure proper alignment with the meter's optical interface
-3. Use appropriate voltage levels (typically 3.3V)
+1. Required components:
+   - ESP32 board
+   - Optical probe compatible with Landis+Gyr meters
+   - USB cable for flashing
 
-## Debugging
+2. Connections:
+   - Connect optical probe TX to ESP32 RX (default: GPIO16)
+   - Connect optical probe RX to ESP32 TX (default: GPIO17)
+   - Power your ESP32 via USB or external power supply
 
-The component includes detailed logging for troubleshooting. To enable debug logging, add to your configuration:
+3. Physical setup:
+   - Align the optical probe with the meter's IR interface
+   - Ensure stable mounting to prevent misalignment
+   - Keep the probe away from strong light sources
 
+## Available Measurements
+
+### Energy Values
+- **Total Active Energy**: Import/Export (kWh)
+- **Tariff Energy**: T1/T2 readings (kWh)
+- **Reactive Energy**: Import/Export (kvarh)
+
+### Instantaneous Readings
+- **Voltage**: Per phase (V)
+- **Current**: Per phase (A)
+- **Power Factor**: Total and per phase
+
+### Status Information
+- Error codes
+- Customer ID
+- Firmware version
+- Meter ID
+- Manufacturing ID
+- Status flags
+- Event counters
+
+## Troubleshooting
+
+1. Enable debug logging in your configuration:
 ```yaml
 logger:
   level: DEBUG
@@ -102,10 +84,23 @@ logger:
     landisgyr: DEBUG
 ```
 
-## License
+2. Common issues:
+   - No readings: Check optical probe alignment
+   - Communication errors: Verify UART settings
+   - Invalid values: Check checksum validation logs
 
-This component is open source and available under the MIT license.
+## Support
+
+- Report issues on GitHub
+- Join ESPHome Discord for community support
+- Check ESPHome documentation for general setup help
 
 ## Contributing
 
-Feel free to submit issues and pull requests for improvements or bug fixes.
+1. Fork the repository
+2. Create a feature branch
+3. Submit a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
