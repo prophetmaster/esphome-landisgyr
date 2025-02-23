@@ -77,7 +77,7 @@ void LandisGyrComponent::loop() {
     serial_buffer_ += response_;
 
     // Debug
-    // ESP_LOGD("HEX", " 0x%02X", response_);
+    ESP_LOGD("HEX", " 0x%02X", response_);
   }
   
   if (a_) {

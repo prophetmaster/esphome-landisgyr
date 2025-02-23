@@ -71,7 +71,7 @@ class LandisGyrComponent : public Component, public uart::UARTDevice {
   bool ack_flag_{false};
   bool etx_flag_{false};
   bool checksum_{false};
-  bool a_{false};
+  // bool a_{false};
 
   // Constants
   static const char NUL = 0;    // null
